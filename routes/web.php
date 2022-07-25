@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,10 +21,18 @@ Route::get('/', function() {
 });
 
 Route::get('/scraping_page', function() {
-    $crawler = Goutte::request('GET', 'https://www.akindo-sushiro.co.jp/menu/');
-    $crawler->filter('.c_l-content .ttl')->each(function ($node) {
-      dump($node->text());
+    $url = 'https://www.akindo-sushiro.co.jp/menu/';
+    $crawler = Goutte::request('GET', $url);
+   $names = $crawler->filter('.c_l-content .ttl')->each(function ($node) {
+        return [
+            'name' => $node->text(),
+            'price' => '1',
+            'url' => '2',
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ];
     });
+    DB::table('api')->insert($names);
     return view('scraping');
 });
 
