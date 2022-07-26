@@ -16,17 +16,17 @@ use Carbon\Carbon;
 */
 
 Route::get('/', function() {
-
     return view('welcome');
 });
 
 Route::get('/scraping_page', function() {
     $url = 'https://www.akindo-sushiro.co.jp/menu/';
     $crawler = Goutte::request('GET', $url);
-   $names = $crawler->filter('.c_l-content .ttl')->each(function ($node) {
+    $price = $crawler->filter('.c_l-content .price');
+    $names = $crawler->filter('.c_l-content .ttl')->each(function ($node) {
         return [
             'name' => $node->text(),
-            'price' => '1',
+            'price' => $price,
             'url' => '2',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
